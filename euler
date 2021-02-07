@@ -1,6 +1,45 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang
+zparseopts -D -E - e:=ex l:=lang a=all -all=all
 
-echo -- ${ex[-1]}
-echo -- ${lang[-1]}
+typeset exercise=${ex[-1]}
+typeset language=${lang[-1]}
+
+typeset -A interpreters
+typeset -A extensions
+
+function setlang {
+  readonly l=${1:?"Language required"}
+  readonly i=${2:?"Interpreter required"}
+  readonly e=${3:?"Extension required"}
+
+  interpreters[${l}]=${i}
+  extensions[${l}]=${e}
+}
+
+function path {
+  readonly lang=${1:?"Language must be defined."}
+  readonly ex=${2:?"Exercise number must be defined."}
+
+  echo "src/${ex}/${lang}/${ex}.${extensions[${lang}]}"
+}
+
+function run {
+  readonly lang=${1:?"Language must be defined."}
+  readonly ex=${2:?"Exercise number must be defined."}
+
+  eval ${interpreters[${lang}]} $(path ${lang} ${ex})
+}
+
+setlang "clojure" "clj -M" "clj"
+setlang "python" "python3" "py"
+setlang "ruby" "ruby" "rb"
+
+if [[ -n ${all} ]]; then
+  for k in ${(k)interpreters}; do
+    echo "lang: ${k}"
+    run ${k} ${exercise}
+  done
+else
+    run ${language} ${exercise}
+fi
