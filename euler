@@ -10,8 +10,8 @@ typeset -A extensions
 
 function setlang {
   readonly l=${1:?"Language required"}
-  readonly i=${2:?"Interpreter required"}
-  readonly e=${3:?"Extension required"}
+  readonly i=${2:-${l}}
+  readonly e=${3:-${l}}
 
   interpreters[${l}]=${i}
   extensions[${l}]=${e}
@@ -28,6 +28,7 @@ function run {
   readonly lang=${1:?"Language must be defined."}
   readonly ex=${2:?"Exercise number must be defined."}
 
+  print -P "lang: %F{green}$lang%f"
   file=$(path ${lang} ${ex})
   if [[ -f ${file} ]]; then
     eval ${interpreters[${lang}]} ${file}
@@ -36,15 +37,19 @@ function run {
   fi
 }
 
+setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
 setlang "ruby" "ruby" "rb"
+setlang "zsh"
+setlang "raku"
+setlang "java"
+setlang "lua"
 
 if [[ -n ${all} ]]; then
-  for k in ${(k)interpreters}; do
-    echo "lang: ${k}"
-    run ${k} ${exercise}
+  for l in ${(k)interpreters}; do
+    run ${l} ${exercise}
   done
 else
-    run ${language} ${exercise}
+  run ${language} ${exercise}
 fi

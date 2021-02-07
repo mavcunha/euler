@@ -1,0 +1,1 @@
+say $*RAKU.compiler.version
