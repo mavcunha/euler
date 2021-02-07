@@ -1,0 +1,6 @@
+#!/usr/bin/env zsh
+
+zparseopts -D -E - e:=ex l:=lang
+
+echo -- ${ex[-1]}
+echo -- ${lang[-1]}
