@@ -28,7 +28,12 @@ function run {
   readonly lang=${1:?"Language must be defined."}
   readonly ex=${2:?"Exercise number must be defined."}
 
-  eval ${interpreters[${lang}]} $(path ${lang} ${ex})
+  file=$(path ${lang} ${ex})
+  if [[ -f ${file} ]]; then
+    eval ${interpreters[${lang}]} ${file}
+  else
+    echo "${file} not found."
+  fi
 }
 
 setlang "clojure" "clj -M" "clj"
