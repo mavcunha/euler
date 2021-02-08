@@ -46,3 +46,33 @@ specific interpreter a file. So you can use it to execute anything in several
 languages just as an exercise. Like _Hello World!_ in several languages.
 Anything that goes into `-e` is the directory and expected name of the file to
 execute.
+
+## Exercise versioning
+
+Sometimes you might find more than one solution for the problem and wants to
+keep them all. This script will allow a crude versioning of the solutions by
+appending a `.V` where `V` is any character. To invoke a specific version just
+add it to the `-e ` argument. Example:
+
+Suppose you have these solutions:
+```
+src/001/python/001.1.py
+src/001/python/001.2.py
+```
+
+You invoke an specific version by:
+```
+./euler -e 001.2 -l python
+```
+
+## Displaying the solution
+
+It is possible to output the contents of an exercise by passing the `-s` flag. This
+will instruct the script to print out the content of the file instead of running it.
+Like so:
+
+```
+./euler -s -l python -e 001.2
+lang: python
+print(sum(set(range(0, 1000, 5)) | set(range(0, 1000, 3))))
+```

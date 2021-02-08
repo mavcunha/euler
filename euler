@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang a=all -all=all
+zparseopts -D -E - e:=ex l:=lang a=all -all=all -show=show s=show
 
 typeset exercise=${ex[-1]%.*}
 typeset version=${ex[-1]/${exercise}/}
@@ -40,13 +40,30 @@ function run {
   fi
 }
 
+function show {
+  readonly l=${1:?"Language required"}
+  readonly e=${2:?"Exercise required"}
+  readonly v=${3:-""}
+
+  print -P "lang: %F{green}${l}%f"
+  cat $(path ${l} ${e} ${v})
+}
+
+function run_or_show {
+  readonly l=${1:?"Language required"}
+  readonly e=${2:?"Exercise required"}
+  readonly v=${3:-""}
+
+  [[ -n ${show} ]] && show ${l} ${e} ${v} || run ${l} ${e} ${v}
+}
+
 function main {
   if [[ -n ${all} ]]; then
     for lang in ${(k)interpreters}; do
-      run ${lang} ${exercise} ${version}
+      run_or_show ${lang} ${exercise} ${version}
     done
   else
-    run ${language} ${exercise} ${version}
+    run_or_show ${language} ${exercise} ${version}
   fi
 }
 
