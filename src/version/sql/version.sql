@@ -1,0 +1,1 @@
+select sqlite_version();
