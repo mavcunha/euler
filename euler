@@ -47,6 +47,7 @@ function show {
 
   print -P "lang: %F{green}${l}%f"
   cat $(path ${l} ${e} ${v})
+  return 0
 }
 
 function run_or_show {
@@ -70,6 +71,7 @@ function main {
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
+setlang "sql" "sqlite3 :memory: <" "sql"
 setlang "ruby" "ruby" "rb"
 setlang "zsh"
 setlang "raku"
