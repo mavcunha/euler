@@ -37,6 +37,16 @@ function run {
   fi
 }
 
+function main {
+  if [[ -n ${all} ]]; then
+    for lang in ${(k)interpreters}; do
+      run ${lang} ${exercise}
+    done
+  else
+    run ${language} ${exercise}
+  fi
+}
+
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
@@ -46,10 +56,4 @@ setlang "raku"
 setlang "java"
 setlang "lua"
 
-if [[ -n ${all} ]]; then
-  for l in ${(k)interpreters}; do
-    run ${l} ${exercise}
-  done
-else
-  run ${language} ${exercise}
-fi
+main
