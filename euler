@@ -2,7 +2,8 @@
 
 zparseopts -D -E - e:=ex l:=lang a=all -all=all
 
-typeset exercise=${ex[-1]}
+typeset exercise=${ex[-1]%.*}
+typeset version=${ex[-1]/${exercise}/}
 typeset language=${lang[-1]}
 
 typeset -A interpreters
@@ -18,20 +19,22 @@ function setlang {
 }
 
 function path {
-  readonly lang=${1:?"Language must be defined."}
-  readonly ex=${2:?"Exercise number must be defined."}
+  readonly l=${1:?"Language required"}
+  readonly e=${2:?"Exercise required"}
+  readonly v=${3:-""}
 
-  echo "src/${ex}/${lang}/${ex}.${extensions[${lang}]}"
+  echo "src/${e}/${l}/${e}${v}.${extensions[${l}]}"
 }
 
 function run {
-  readonly lang=${1:?"Language must be defined."}
-  readonly ex=${2:?"Exercise number must be defined."}
+  readonly l=${1:?"Language required"}
+  readonly e=${2:?"Exercise required"}
+  readonly v=${3:-""}
 
-  print -P "lang: %F{green}$lang%f"
-  file=$(path ${lang} ${ex})
+  print -P "lang: %F{green}${l}%f"
+  file=$(path ${l} ${e} ${v})
   if [[ -f ${file} ]]; then
-    eval ${interpreters[${lang}]} ${file}
+    eval ${interpreters[${l}]} ${file}
   else
     echo "${file} not found."
   fi
@@ -40,10 +43,10 @@ function run {
 function main {
   if [[ -n ${all} ]]; then
     for lang in ${(k)interpreters}; do
-      run ${lang} ${exercise}
+      run ${lang} ${exercise} ${version}
     done
   else
-    run ${language} ${exercise}
+    run ${language} ${exercise} ${version}
   fi
 }
 
