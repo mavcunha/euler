@@ -4,9 +4,8 @@
     1 1
     (+ (fib (- n 1)) (fib (- n 2)))))
 
-(def MAXFIB 4000000)
 (print
   (reduce +
      (filter even?
-         (take-while #(< % MAXFIB)
+         (take-while #(< % 4000000)
             (map fib (iterate inc 1))))))
