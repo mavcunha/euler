@@ -1,9 +1,11 @@
+-- non-recursive solution
 function fib(n)
-  if n == 0 or n == 1 then
-    return 1
-  else
-    return fib(n - 1) + fib(n - 2)
+  f = {}
+  f[0], f[1] = 1, 1
+  for i = 2, n do
+    f[i] = f[i - 1] + f[i - 2]
   end
+  return f[n]
 end
 
 local i, sum, f = 0, 0, 0
