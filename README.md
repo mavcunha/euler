@@ -8,9 +8,8 @@ Euler](https://projecteuler.net) exercises in different programming languages.
 ```
 
 Where `EXERCISE` is the number of the exercise and `LANGUAGE` is the
-programming language you want to run the exercise.
-
-To run all languages you can use the `-a` parameter.
+programming language you want to run the exercise. If `-l` is
+omitted than the script will execute for all languages.
 
 Each exercise file needs to be created following the layout:
 

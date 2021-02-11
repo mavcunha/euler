@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang a=all -all=all -show=show s=show
+zparseopts -D -E - e:=ex l:=lang -show=show s=show
 
 typeset exercise=${ex[-1]%.*}
 typeset version=${ex[-1]/${exercise}/}
@@ -59,7 +59,7 @@ function run_or_show {
 }
 
 function main {
-  if [[ -n ${all} ]]; then
+  if [[ -z ${language} ]]; then
     for lang in ${(k)interpreters}; do
       run_or_show ${lang} ${exercise} ${version}
     done
