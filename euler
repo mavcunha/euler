@@ -2,6 +2,8 @@
 
 zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum
 
+readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
+
 typeset exercise=${ex[-1]%.*}
 typeset version=${ex[-1]/${exercise}/}
 typeset language=${lang[-1]}
@@ -23,7 +25,7 @@ function path {
   readonly e=${2:?"Exercise required"}
   readonly v=${3:-""}
 
-  echo "src/${e}/${l}/${e}${v}.${extensions[${l}]}"
+  echo "${SOLDIR}/${e}/${l}/${e}${v}.${extensions[${l}]}"
 }
 
 function run {
@@ -31,7 +33,7 @@ function run {
   readonly e=${2:?"Exercise required"}
   readonly v=${3:-""}
 
-  print -P "lang: %F{green}${l}%f"
+  print -P "%F{green}${l}%f:"
   file=$(path ${l} ${e} ${v})
   if [[ -f ${file} ]]; then
     eval ${interpreters[${l}]} ${file}
@@ -45,7 +47,7 @@ function show {
   readonly e=${2:?"Exercise required"}
   readonly v=${3:-""}
 
-  print -P "lang: %F{green}${l}%f"
+  print -P "%F{green}${l}%f:"
   cat $(path ${l} ${e} ${v})
   return 0
 }
@@ -69,13 +71,14 @@ function main {
 }
 
 function summary {
+  print "Project Euler Solution Summary"
+  print "using dir: ${SOLDIR}"
   for lang in ${(k)interpreters}; do
-    local dir=$(find src -depth 2 -name ${lang} -type d -exec dirname {} \; | \
-      sed -e 's/^src\///' | sort | xargs echo )
+    local dir=$(find ${SOLDIR} -depth 2 -name ${lang} -type d -exec dirname {} \; | \
+      tr -d "${SOLDIR}" | sed -e 's/[^0-9]*//' | sort | xargs echo )
           printf "%-18s %s\n" $(print -P  "%F{green}${lang}%f:") "${dir[@]}"
   done
 }
-
 
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
@@ -87,9 +90,4 @@ setlang "raku"
 setlang "java"
 setlang "lua"
 
-if [[ -n ${sum} ]]; then
-  summary
-else
-  main
-fi
-
+[[ -n ${sum} ]] && summary || main

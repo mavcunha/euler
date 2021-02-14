@@ -72,6 +72,33 @@ Like so:
 
 ```
 ./euler -s -l python -e 001.2
-lang: python
+python:
 print(sum(set(range(0, 1000, 5)) | set(range(0, 1000, 3))))
+```
+
+## Respecting Project Euler's solutions
+
+The project asks their users to not share beyond the first hundred
+solutions. I intend to repect that while keeping a couple of the first
+ones to illustrate and test this script.
+
+## Using a diferent directory for your solutions
+
+If the environment variable `PROJECT_EULER_DIR` is defined this script
+will use it as the source for your solutions. You can inspect what
+is the current directory by using the flag  `--summary` which will
+display a quick summary:
+
+```
+Project Euler Solution Summary
+using dir: src
+clojure: 001 002 003
+wolfram: 001 002 003
+lua:     001 002 003
+java:    001 002 003
+sql:     001 002 003
+zsh:     001 002 003
+ruby:    001 002 003
+raku:    001 002 003
+python:  001 002 003
 ```
