@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang -show=show s=show
+zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum
 
 typeset exercise=${ex[-1]%.*}
 typeset version=${ex[-1]/${exercise}/}
@@ -68,6 +68,15 @@ function main {
   fi
 }
 
+function summary {
+  for lang in ${(k)interpreters}; do
+    local dir=$(find src -depth 2 -name ${lang} -type d -exec dirname {} \; | \
+      sed -e 's/^src\///' | sort | xargs echo )
+          printf "%-18s %s\n" $(print -P  "%F{green}${lang}%f:") "${dir[@]}"
+  done
+}
+
+
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
@@ -78,4 +87,9 @@ setlang "raku"
 setlang "java"
 setlang "lua"
 
-main
+if [[ -n ${sum} ]]; then
+  summary
+else
+  main
+fi
+
