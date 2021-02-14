@@ -38,7 +38,7 @@ function run {
   if [[ -f ${file} ]]; then
     eval ${interpreters[${l}]} ${file}
   else
-    echo "${file} not found."
+    print -P "%F{001}${e} not found%f"
   fi
 }
 
