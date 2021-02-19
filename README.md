@@ -102,3 +102,21 @@ ruby:    001 002 003
 raku:    001 002 003
 python:  001 002 003
 ```
+
+## Listing languages defined in the script
+
+If you need to do a quick check no the configured languages
+you have use `--list`, example:
+
+```
+Languages defined
+clojur (clj -M)
+wolfram (wolframscript -file)
+lua (lua)
+java (java)
+sql (sqlite3 :memory: <)
+zsh (zsh)
+ruby (ruby)
+raku (raku)
+python (python3)
+```

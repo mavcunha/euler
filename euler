@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum
+zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum -list=list
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -80,6 +80,14 @@ function summary {
   done
 }
 
+function list_languages {
+  print "Languages defined"
+  print -P  "%F{green}name%f -> %F{yellow}interpreter%f -> %F{red}extension%f\n"
+  for lang in ${(k)interpreters}; do
+    print -P  "%F{green}${lang}%f -> %F{yellow}${interpreters[$lang]}%f -> %F{red}$extensions[$lang]%f"
+  done
+}
+
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
@@ -90,4 +98,10 @@ setlang "raku"
 setlang "java"
 setlang "lua"
 
-[[ -n ${sum} ]] && summary || main
+if [[ -n ${sum} ]]; then
+  summary
+elif [[ -n ${list} ]]; then
+  list_languages
+else
+  main
+fi
