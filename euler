@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum -list=list
+zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum \
+  -list=list h=help -help=help
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -10,6 +11,26 @@ typeset language=${lang[-1]}
 
 typeset -A interpreters
 typeset -A extensions
+
+function help {
+ cat <<- EOH
+euler [-e EXERCISE] [-l LANG] [-s|--show] [--summary] [--list] [-h|--help]
+
+Where EXERCISE is the exercise you want to run, example 001, 002, 003...
+and LANG is the language you want it to run. If LANG is absent all
+configured languages will run.
+
+--summary     Will show a quick summary of the exercises already found.
+
+--list        Lists the current languages and interpreters configuration.
+
+-s|--show     Instead of executing the exercise it will show its code. If
+              EXERCISE is not given then will show for all languages.
+
+-h|--help     Shows this message.
+
+EOH
+}
 
 function setlang {
   readonly l=${1:?"Language required"}
@@ -98,7 +119,9 @@ setlang "raku"
 setlang "java"
 setlang "lua"
 
-if [[ -n ${sum} ]]; then
+if [[ -n ${help} ]]; then
+  help
+elif [[ -n ${sum} ]]; then
   summary
 elif [[ -n ${list} ]]; then
   list_languages
