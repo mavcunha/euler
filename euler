@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
-zparseopts -D -E - e:=ex l:=lang -show=show s=show -summary=sum \
-  -list=list h=help -help=help
+zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
+  -list=list h=help -help=help -time=timeit
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -14,7 +14,7 @@ typeset -A extensions
 
 function help {
  cat <<- EOH
-euler [-e EXERCISE] [-l LANG] [-s|--show] [--summary] [--list] [-h|--help]
+euler [-e EXERCISE] [-l LANG] [--show] [--summary] [--list] [--time] [-h|--help]
 
 Where EXERCISE is the exercise you want to run, example 001, 002, 003...
 and LANG is the language you want it to run. If LANG is absent all
@@ -24,8 +24,11 @@ configured languages will run.
 
 --list        Lists the current languages and interpreters configuration.
 
--s|--show     Instead of executing the exercise it will show its code. If
+--show        Instead of executing the exercise it will show its code. If
               EXERCISE is not given then will show for all languages.
+
+--time        Will add 'time' to the header of the interpreter for timing
+              its execution.
 
 -h|--help     Shows this message.
 
@@ -57,7 +60,7 @@ function run {
   print -P "%F{green}${l}%f:"
   file=$(path ${l} ${e} ${v})
   if [[ -f ${file} ]]; then
-    eval ${interpreters[${l}]} ${file}
+    eval ${timeit/--/} ${interpreters[${l}]} ${file}
   else
     print -P "%F{001}${e} not found%f"
   fi

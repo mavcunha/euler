@@ -66,21 +66,15 @@ You invoke an specific version by:
 
 ## Displaying the solution
 
-It is possible to output the contents of an exercise by passing the `-s` flag. This
+It is possible to output the contents of an exercise by passing the `--show` flag. This
 will instruct the script to print out the content of the file instead of running it.
 Like so:
 
 ```
-./euler -s -l python -e 001.2
+./euler -show -l python -e 001.2
 python:
 print(sum(set(range(0, 1000, 5)) | set(range(0, 1000, 3))))
 ```
-
-## Respecting Project Euler's solutions
-
-The project asks their users to not share beyond the first hundred
-solutions. I intend to repect that while keeping a couple of the first
-ones to illustrate and test this script.
 
 ## Using a diferent directory for your solutions
 
@@ -103,6 +97,21 @@ raku:    001 002 003
 python:  001 002 003
 ```
 
+## Timing your solution
+
+Sometimes solutions might take longer than planned or you are simply
+optimizing your solution. Using the flag `--time` will execute the
+interpreters with `time` before them which should you give a quick
+summary of execution time.
+
+```
+$ euler --time -e 005 -l sql
+
+sql:
+232792560
+  6.29s user 0.01s system 99% cpu 6.309 total
+```
+
 ## Listing languages defined in the script
 
 If you need to do a quick check no the configured languages
@@ -120,3 +129,9 @@ ruby (ruby)
 raku (raku)
 python (python3)
 ```
+
+## Respecting Project Euler's solutions
+
+The project asks their users to not share beyond the first hundred
+solutions. I intend to repect that while keeping a couple of the first
+ones to illustrate and test this script.
