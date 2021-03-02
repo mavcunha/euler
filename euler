@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
-  -list=list h=help -help=help -time=timeit
+  -list=list h=help -help=help -time=timeit -create=createdirs
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -112,6 +112,15 @@ function list_languages {
   done
 }
 
+function create_dirs {
+  readonly ex=${1:?"Exercise required, use -e"}
+  print -P "Creating dirs for exercise: %F{green}${ex}%f"
+  for lang in ${(k)interpreters}; do
+    print -P  "%F{green}${ex}%f/%F{yellow}${lang}%f"
+    mkdir -p ${SOLDIR}/${ex}/${lang}
+  done
+}
+
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
@@ -128,6 +137,8 @@ elif [[ -n ${sum} ]]; then
   summary
 elif [[ -n ${list} ]]; then
   list_languages
+elif [[ -n ${createdirs} ]]; then
+  create_dirs ${exercise}
 else
   main
 fi
