@@ -98,9 +98,13 @@ function summary {
   print "Project Euler Solution Summary"
   print "using dir: ${SOLDIR}"
   for lang in ${(k)interpreters}; do
-    local dir=$(find ${SOLDIR} -depth 2 -name ${lang} -type d -exec dirname {} \; | \
-      tr -d "${SOLDIR}" | sed -e 's/[^0-9]*//' | sort | xargs echo )
-          printf "%-18s %s\n" $(print -P  "%F{green}${lang}%f:") "${dir[@]}"
+    local ext=${extensions[${lang}]}
+    local files=($(find ${SOLDIR} -type f -regex ".*\/${lang}\/[0-9]*\.${ext}$" | sort ))
+
+    local r=""
+    for file (${files[*]}) r+="${file:t:r} "
+
+    printf "%-18s %s\n" $(print -P  "%F{green}${lang}%f:") "${r}"
   done
 }
 
