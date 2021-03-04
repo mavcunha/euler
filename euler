@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 
 zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
-  -list=list h=help -help=help -time=timeit -create=createdirs
+  -list=list h=help -help=help -time=timeit -create=createdirs \
+  -problem=problem
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -14,21 +15,33 @@ typeset -A extensions
 
 function help {
  cat <<- EOH
-euler [-e EXERCISE] [-l LANG] [--show] [--summary] [--list] [--time] [-h|--help]
+euler [-e EXERCISE] [-l LANG] [--show] [--summary] [--list] [--time]
+      [--create] [--problem] [-h|--help]
 
 Where EXERCISE is the exercise you want to run, example 001, 002, 003...
 and LANG is the language you want it to run. If LANG is absent all
 configured languages will run.
 
---summary     Will show a quick summary of the exercises already found.
+-e EXERCISE   The exercise such as 001, 002, 003, ... in fact any
+              subdir of the solutions will work.
 
---list        Lists the current languages and interpreters configuration.
+-l LANG       Narrows to the LANG, where LANG is one of the languages
+              configured in 'setlang', example: python, ruby, ...
 
 --show        Instead of executing the exercise it will show its code. If
               EXERCISE is not given then will show for all languages.
 
+--summary     Will show a quick summary of the exercises already found.
+
+--list        Lists the current languages and interpreters configuration.
+
 --time        Will add 'time' to the header of the interpreter for timing
               its execution.
+
+--create      It will create the directories for exercise given by '-e'
+
+--problem     Will show the problem description for '-e'. It actually
+              prints out the 'README.md' file on the exercise directory.
 
 -h|--help     Shows this message.
 
@@ -125,6 +138,12 @@ function create_dirs {
   done
 }
 
+function show_problem {
+  readonly ex=${1:?"Exercise required, use -e"}
+  print -P "%F{green}${ex}%f: README.md"
+  cat ${SOLDIR}/${ex}/README.md
+}
+
 setlang "wolfram" "wolframscript -file" "wls"
 setlang "clojure" "clj -M" "clj"
 setlang "python" "python3" "py"
@@ -143,6 +162,8 @@ elif [[ -n ${list} ]]; then
   list_languages
 elif [[ -n ${createdirs} ]]; then
   create_dirs ${exercise}
+elif [[ -n ${problem} ]]; then
+  show_problem ${exercise}
 else
   main
 fi

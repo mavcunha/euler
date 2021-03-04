@@ -112,6 +112,31 @@ sql:
   6.29s user 0.01s system 99% cpu 6.309 total
 ```
 
+## Check the problem description
+
+If you create a `README.md` file in the directory of the exercise, like:
+
+```
+005/README.md
+005/clojure/005.clj
+005/lua/005/005.lua
+```
+
+It is possible to read display the `README.md` file using the flag `--problem`
+together with the problem. Like:
+
+```
+001: README.md
+# Multiples of 3 and 5
+
+If we list all the natural numbers below 10 that are multiples of 3 or 5, we
+get 3, 5, 6 and 9. The sum of these multiples is 23.
+
+Find the sum of all the multiples of 3 or 5 below 1000.
+
+From: https://projecteuler.net/problem=1
+```
+
 ## Listing languages defined in the script
 
 If you need to do a quick check no the configured languages
