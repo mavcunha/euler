@@ -1,8 +1,9 @@
 #!/usr/bin/env zsh
+readonly VERSION="v1.0.0"
 
 zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
   -list=list h=help -help=help -time=timeit -create=createdirs \
-  -problem=problem
+  -version=scriptver -problem=problem
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
@@ -16,7 +17,7 @@ typeset -A extensions
 function help {
  cat <<- EOH
 euler [-e EXERCISE] [-l LANG] [--show] [--summary] [--list] [--time]
-      [--create] [--problem] [-h|--help]
+      [--create] [--problem] [--version] [-h|--help]
 
 Where EXERCISE is the exercise you want to run, example 001, 002, 003...
 and LANG is the language you want it to run. If LANG is absent all
@@ -43,6 +44,8 @@ configured languages will run.
 --problem     Will show the problem description for '-e'. It actually
               prints out the 'README.md' file on the exercise directory.
 
+--version     Display the version of this script.
+
 -h|--help     Shows this message.
 
 EOH
@@ -57,21 +60,36 @@ function setlang {
   extensions[${l}]=${e}
 }
 
-function path {
-  readonly l=${1:?"Language required"}
-  readonly e=${2:?"Exercise required"}
+function fpath {
+  readonly e=${1:?"Exercise required"}
+  readonly l=${2:?"Language required"}
   readonly v=${3:-""}
 
-  echo "${SOLDIR}/${e}/${l}/${e}${v}.${extensions[${l}]}"
+  local file="${e}${v}.${extensions[${l}]}"
+
+  echo $(dpath ${e} ${l} ${file})
+}
+
+function dpath {
+  readonly e=${1:?"Exercise required"}
+  readonly l=${2:-""}
+  readonly f=${3:-""}
+
+  local partial="${SOLDIR}"
+  for d in e l f; do
+    [[ -n ${(P)${d}} ]] && partial="${partial}/${(P)${d}}"
+  done
+
+  echo ${partial}
 }
 
 function run {
-  readonly l=${1:?"Language required"}
-  readonly e=${2:?"Exercise required"}
+  readonly e=${1:?"Exercise required"}
+  readonly l=${2:?"Language required"}
   readonly v=${3:-""}
 
   print -P "%F{green}${l}%f:"
-  file=$(path ${l} ${e} ${v})
+  file=$(fpath ${e} ${l} ${v})
   if [[ -f ${file} ]]; then
     eval ${timeit/--/} ${interpreters[${l}]} ${file}
   else
@@ -80,30 +98,30 @@ function run {
 }
 
 function show {
-  readonly l=${1:?"Language required"}
-  readonly e=${2:?"Exercise required"}
+  readonly e=${1:?"Exercise required"}
+  readonly l=${2:?"Language required"}
   readonly v=${3:-""}
 
   print -P "%F{green}${l}%f:"
-  cat $(path ${l} ${e} ${v})
+  cat $(fpath ${e} ${l} ${v})
   return 0
 }
 
 function run_or_show {
-  readonly l=${1:?"Language required"}
-  readonly e=${2:?"Exercise required"}
+  readonly e=${1:?"Exercise required"}
+  readonly l=${2:?"Language required"}
   readonly v=${3:-""}
 
-  [[ -n ${show} ]] && show ${l} ${e} ${v} || run ${l} ${e} ${v}
+  [[ -n ${show} ]] && show ${e} ${l} ${v} || run ${e} ${l} ${v}
 }
 
 function main {
   if [[ -z ${language} ]]; then
     for lang in ${(k)interpreters}; do
-      run_or_show ${lang} ${exercise} ${version}
+      run_or_show ${exercise} ${lang} ${version}
     done
   else
-    run_or_show ${language} ${exercise} ${version}
+    run_or_show ${exercise} ${language} ${version}
   fi
 }
 
@@ -125,7 +143,7 @@ function list_languages {
   print "Languages defined"
   print -P  "%F{green}name%f -> %F{yellow}interpreter%f -> %F{red}extension%f\n"
   for lang in ${(k)interpreters}; do
-    print -P  "%F{green}${lang}%f -> %F{yellow}${interpreters[$lang]}%f -> %F{red}$extensions[$lang]%f"
+    print -P  "${lang} -> %F{yellow}${interpreters[$lang]}%f -> %F{red}$extensions[$lang]%f"
   done
 }
 
@@ -134,14 +152,14 @@ function create_dirs {
   print -P "Creating dirs for exercise: %F{green}${ex}%f"
   for lang in ${(k)interpreters}; do
     print -P  "%F{green}${ex}%f/%F{yellow}${lang}%f"
-    mkdir -p ${SOLDIR}/${ex}/${lang}
+    mkdir -p $(dpath ${ex} ${lang})
   done
 }
 
 function show_problem {
   readonly ex=${1:?"Exercise required, use -e"}
   print -P "%F{green}${ex}%f: README.md"
-  cat ${SOLDIR}/${ex}/README.md
+  cat $(dpath ${ex} README.md)
 }
 
 setlang "wolfram" "wolframscript -file" "wls"
@@ -164,6 +182,8 @@ elif [[ -n ${createdirs} ]]; then
   create_dirs ${exercise}
 elif [[ -n ${problem} ]]; then
   show_problem ${exercise}
+elif [[ -n ${scriptver} ]]; then
+  print -P "euler(%F{green}${VERSION}%f)"
 else
   main
 fi

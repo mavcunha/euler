@@ -155,6 +155,12 @@ raku (raku)
 python (python3)
 ```
 
+## Extending changing this script
+
+You're free to change and extend this script. Under the
+directory `test` you will find some tests to help on that
+task.
+
 ## Respecting Project Euler's solutions
 
 The project asks their users to not share beyond the first hundred
