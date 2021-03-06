@@ -122,10 +122,11 @@ If you create a `README.md` file in the directory of the exercise, like:
 005/lua/005/005.lua
 ```
 
-It is possible to read display the `README.md` file using the flag `--problem`
+It is possible to read  the `README.md` file using the flag `--problem`
 together with the problem. Like:
 
 ```
+$ euler -e 001 --problem
 001: README.md
 # Multiples of 3 and 5
 
