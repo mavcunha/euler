@@ -171,6 +171,7 @@ setlang "zsh"
 setlang "raku"
 setlang "java"
 setlang "lua"
+setlang "typescript" "ts-node" "ts"
 
 if [[ -n ${help} ]]; then
   help
