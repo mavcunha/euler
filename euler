@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 readonly VERSION="v1.0.0"
 
+[[ -z $1 ]] && $0 --help && exit 1
+
 zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
   -list=list h=help -help=help -time=timeit -create=createdirs \
   -version=scriptver -problem=problem
