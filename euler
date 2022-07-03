@@ -9,8 +9,8 @@ zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
-typeset exercise=${ex[-1]%.*}
-typeset version=${ex[-1]/${exercise}/}
+typeset exercise=${(l:3::0:)ex[-1]%.*}
+typeset version=${ex[-1]:e}
 typeset language=${lang[-1]}
 
 typeset -A interpreters
@@ -67,7 +67,7 @@ function fpath {
   readonly l=${2:?"Language required"}
   readonly v=${3:-""}
 
-  local file="${e}${v}.${extensions[${l}]}"
+  local file="${e}${v:+.${v}}.${extensions[${l}]}"
 
   echo $(dpath ${e} ${l} ${file})
 }
@@ -95,7 +95,7 @@ function run {
   if [[ -f ${file} ]]; then
     eval ${timeit/--/} ${interpreters[${l}]} ${file}
   else
-    print -P "%F{001}${e} not found%f"
+    print -P "%F{001}Exercise: ${e} ${v:+version: ${v}} not found%f"
   fi
 }
 
@@ -120,10 +120,10 @@ function run_or_show {
 function main {
   if [[ -z ${language} ]]; then
     for lang in ${(k)interpreters}; do
-      run_or_show ${exercise} ${lang} ${version}
+      run_or_show "${exercise}" "${lang}" "${version}"
     done
   else
-    run_or_show ${exercise} ${language} ${version}
+    run_or_show "${exercise}" "${language}" "${version}"
   fi
 }
 
