@@ -3,14 +3,25 @@ readonly VERSION="v1.0.0"
 
 [[ -z $1 ]] && $0 --help && exit 1
 
-zparseopts -D -E - e:=ex l:=lang -show=show -summary=sum \
+zparseopts -F -D -E - e:=ex l:=lang -show=show -summary=sum \
   -list=list h=help -help=help -time=timeit -create=createdirs \
   -version=scriptver -problem=problem
 
 readonly SOLDIR=${PROJECT_EULER_DIR:-"src"}
 
-typeset exercise=${(l:3::0:)ex[-1]%.*}
+# 'len' must be 3 (for exercise numbers) or the 
+# length of the word to accomodate other types
+# of exercises such as '-e hello'
+typeset len=$(( ${#ex[-1]} >= 3 ? ${#ex[-1]} : 3))
+
+# (l:N::0:) will left pad with '0', allowing
+# us to pass '-e 1' and create '001' instead
+typeset exercise=${(l:${len}::0:)ex[-1]%.*}
+
+# we reuse the idea of file.ext (file extension)
+# to capture a version of an exercise such as 001.1
 typeset version=${ex[-1]:e}
+
 typeset language=${lang[-1]}
 
 typeset -A interpreters
@@ -118,6 +129,10 @@ function run_or_show {
 }
 
 function main {
+  if [[ ${exercise} == '000' ]]; then
+    print -P "%F{001}Missing -e EXERCISE, use 'euler --help' for more information%f"
+    return 1
+  fi
   if [[ -z ${language} ]]; then
     for lang in ${(k)interpreters}; do
       run_or_show "${exercise}" "${lang}" "${version}"
