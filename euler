@@ -188,7 +188,6 @@ setlang "zsh"
 setlang "raku"
 setlang "java"
 setlang "lua"
-setlang "typescript" "NODE_DISABLE_COLORS=true ts-node" "ts"
 
 if [[ -n ${help} ]]; then
   help
