@@ -84,12 +84,12 @@ function fpath {
 }
 
 function dpath {
-  readonly e=${1:?"Exercise required"}
-  readonly l=${2:-""}
-  readonly f=${3:-""}
+  readonly exer=${1:?"Exercise required"}
+  readonly lang=${2:-""}
+  readonly file=${3:-""}
 
   local partial="${SOLDIR}"
-  for d in e l f; do
+  for d in exer lang file; do
     [[ -n ${(P)${d}} ]] && partial="${partial}/${(P)${d}}"
   done
 
@@ -97,16 +97,16 @@ function dpath {
 }
 
 function run {
-  readonly e=${1:?"Exercise required"}
-  readonly l=${2:?"Language required"}
-  readonly v=${3:-""}
+  readonly exer=${1:?"Exercise required"}
+  readonly lang=${2:?"Language required"}
+  readonly version=${3:-""}
 
-  print -P "%F{green}${l}%f:"
-  file=$(fpath ${e} ${l} ${v})
+  print -P "%F{green}${lang}%f:"
+  file=$(fpath ${exer} ${lang} ${version})
   if [[ -f ${file} ]]; then
-    eval ${timeit/--/} ${interpreters[${l}]} ${file}
+    eval ${timeit/--/} ${interpreters[${lang}]} ${file}
   else
-    print -P "%F{001}Exercise: ${e} ${v:+version: ${v}} not found%f"
+    print -P "%F{001}Exercise: ${exer} ${v:+version: ${version}} not found%f"
   fi
 }
 
@@ -195,9 +195,9 @@ elif [[ -n ${sum} ]]; then
   summary
 elif [[ -n ${list} ]]; then
   list_languages
-elif [[ -n ${createdirs} ]]; then
+elif [[ -n ${createdirs} && -n ${ex} ]]; then
   create_dirs ${exercise}
-elif [[ -n ${problem} ]]; then
+elif [[ -n ${problem} && -n ${ex} ]]; then
   show_problem ${exercise}
 elif [[ -n ${scriptver} ]]; then
   print -P "euler(%F{green}${VERSION}%f)"
